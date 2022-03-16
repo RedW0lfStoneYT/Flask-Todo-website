@@ -9,4 +9,3 @@ sqlite3
 ```
 
 Should be able to run on a linux server fine (if you translate the batch to bash)
-
