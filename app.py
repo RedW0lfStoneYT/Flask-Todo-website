@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, g
 import sqlite3
-import click 
-import csv
 
 app = Flask(__name__)
 app.secret_key = "Secret Key"
