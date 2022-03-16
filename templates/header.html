@@ -1,0 +1,311 @@
+{% block head %}
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+        $(function() {
+          $('.project-btn').on('click', function(e) {
+            e.preventDefault();
+
+            value = document.querySelector(".project-input").value;
+            
+            // todoList = document.querySelector(".project-list");
+
+            // project = document.createElement('div');
+            // project.classList.add('project');
+
+            // newProject = document.createElement('li');
+            // newProject.classList.add('project-item');
+
+            // project.append(newProject);
+
+            // projectTitle = document.createElement('p');
+            // projectTitle.innerText = value;
+            // projectTitle.classList.add('project-title');
+
+            // newProject.append(projectTitle);
+            
+            // projectForm = document.createElement('form');
+            
+            // newProject.append(projectForm);
+
+            // projectInput = document.createElement('input');
+            // projectInput.type = "text";
+            // projectInput.name = value;
+            // projectInput.classList.add('todo-input-' + value)
+            
+            // projectForm.append(projectInput);
+
+            // projectButton = document.createElement('button');
+            // projectButton.type = 'submit';
+            // projectButton.classList.add('todo-btn');
+            // projectButton.id = value;
+            // projectButton.innerHTML = '<i class="fas fa-plus-square" id="' + value + '"></i>'
+
+            // projectForm.append(projectButton);
+
+            // todoList.append(project)
+
+            $.ajax({
+                type: "POST",
+                url: "/add_project",
+                dataType: "json",
+                data: {
+                    project_input: value
+                }
+            });
+            location.reload();
+            return false;
+          });
+          $('.todo-btn').on('click', function(e) {
+            e.preventDefault();
+            
+            id = e.target.id;
+
+            value = document.querySelector(".todo-input-" + id).value;
+
+            // todoList = document.querySelector(".todo-list-" + id)
+            
+            // projectName = document.querySelector(".todo-input-" + id).name
+
+            // const todoDiv = document.createElement('div');
+            // todoDiv.classList.add('todo');
+            // todoDiv.classList.add('todo-' + projectName);
+
+
+            // const newTodo = document.createElement('li');
+            // newTodo.innerText = value;
+            // newTodo.classList.add('todo-item');
+
+            // todoDiv.appendChild(newTodo);
+
+            // const completedBtn = document.createElement('button');
+            // completedBtn.id = projectName;
+            // completedBtn.name = "False";
+            // completedBtn.innerHTML = "<i class='fas fa-check'><i>";
+            // completedBtn.classList.add('complete-btn');
+
+            // todoDiv.appendChild(completedBtn);
+
+            // const deleteBtn = document.createElement('button');
+            // deleteBtn.id = projectName;
+            // deleteBtn.innerHTML = "<i class='fas fa-trash'></i>";
+            // deleteBtn.classList.add('trash-btn');
+
+            // todoDiv.appendChild(deleteBtn);
+            
+            // todoList.appendChild(todoDiv);
+            // value = "";
+
+
+            $.ajax({
+                type: "POST",
+                url: "/add_task",
+                dataType: "json",
+                data: {
+                    task_input: value,
+                    project: id
+                }
+            });
+            document.querySelector(".todo-input-" + id).value = "";
+            location.reload()
+            return false;
+          });
+          $('.trash-btn').on('click', function(e) {
+            e.preventDefault();
+            id = e.target.id;
+            
+            taskElm = document.querySelector(".todo-" + id);
+            $(taskElm).remove();
+            $.ajax({
+                type: "POST",
+                url: "/delete_task",
+                dataType: "json",
+                data: {
+                    taskID: id
+                }
+            });
+            return false;
+          });
+          $('.complete-btn').on('click', function(e) {
+            e.preventDefault();
+            id = e.target.id;
+            complete = e.target.name == "True" ? 0 : 1;
+            console.log(complete);
+            
+            taskElm = document.querySelector(".todo-" + id);
+            taskElm.classList.toggle('completed');
+            e.target.name = complete == 0 ? "False" : "True";
+
+            $.ajax({
+                type: "POST",
+                url: "/complete_toggle",
+                dataType: "json",
+                data: {
+                    taskID: id,
+                    complete: complete
+                }
+            });
+            return false;
+          });
+          $('.project-delete').on('click', function(e) {
+            e.preventDefault();
+            id = e.target.id;
+            
+            $.ajax({
+                type: "POST",
+                url: "/delete_project",
+                dataType: "json",
+                data: {
+                    project: id
+                }
+            });
+            location.reload();
+            return false;
+        });
+    });
+</script>
+
+<style>
+    * 
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body 
+{
+    background-image: linear-gradient(90deg, rgb(95, 223, 255), #f665ef);
+    color: rgb(255, 255, 255);
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+}
+
+header
+{
+    font-size: 1.5rem;
+    text-shadow: 1px 1px black;
+}
+header
+{    
+    min-height: 20vh;
+}
+header, form
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.project-title
+{
+    display: flex;
+}
+
+
+
+form input, form button, .project-title button
+{
+    padding: 0.5rem;
+    font-size: 2rem;
+    border: none;
+    background: white;
+}
+
+form button
+{
+    color: black;
+    background: white;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+form button:hover
+{
+    color: white;
+    background-color: black;
+}
+
+.todo-container
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.todo-list, .project-list
+{
+    min-width: 25%;
+    list-style: none;
+}
+
+.todo
+{
+    margin: 0.5rem;
+    background: whitesmoke;
+    color: black;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* Align finish and remove item to the right */
+.todo li
+{
+    flex: 1;
+}
+
+/*  icons */
+.trash-btn, .complete-btn, .project-title button
+{
+    background: red;
+    color: white;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.project-title button
+{
+    margin-right: 0.5rem;
+}
+
+.complete-btn
+{
+    background-color: green;
+}
+
+/* style list items */
+.todo-item, .project-title
+{
+    padding-left: 0.5rem;
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+.fa-trash, .fa-check
+{
+    pointer-events: none;
+}
+
+.completed
+{
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+
+
+
+</style>
+
+{% endblock %}
